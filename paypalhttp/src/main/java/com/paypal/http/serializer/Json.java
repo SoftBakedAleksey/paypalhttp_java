@@ -375,11 +375,18 @@ public class Json implements Serializer {
 		innerCount++;
 		i++;
 
+		boolean isInsideCommas = s[i] == '"' && !isEscaped(s, i);
+
 		if (!matchesOpposing(s[i], searchToken)) {
 			do {
 				i++;
+				if (s[i] == '"'  && !isEscaped(s, i)) {
+					isInsideCommas = ! isInsideCommas;
+				}
 				if (i >= s.length) {
 					break;
+				} else if (isInsideCommas) {
+					//do nothing
 				} else if (isBoundaryChar(startToken) && s[i] == startToken) {
 					innerCount++;
 				} else if (matchesOpposing(s[i], searchToken)) {
